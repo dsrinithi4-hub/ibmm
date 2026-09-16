@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HostelFix — Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+  <header class="site-header">
+    <a href="{{ url_for('index') }}" class="brand">HostelFix</a>
+    <nav>
+      <a href="{{ url_for('index') }}">Report</a>
+      <a href="{{ url_for('dashboard') }}">Dashboard</a>
+      <a href="{{ url_for('admin') }}">Admin</a>
+    </nav>
+  </header>
+
+  <div class="container">
+    <h1 style="margin-bottom: 24px;">All complaints</h1>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="flash flash-{{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <div class="admin-grid">
+      {% for c in complaints %}
+      <div class="complaint-card">
+        <div class="card-top">
+          <div class="room">{{ c.room_no }}</div>
+          {% if c.priority == 'High' %}
+            <span class="badge badge--high">High</span>
+          {% elif c.priority == 'Medium' %}
+            <span class="badge badge--medium">Medium</span>
+          {% else %}
+            <span class="badge badge--low">Low</span>
+          {% endif %}
+        </div>
+
+        <div class="meta">{{ c.category }} · {{ c.name }} · {{ c.created_at }}</div>
+        <div class="description">{{ c.description }}</div>
+
+        <div class="card-footer">
+          <form method="POST" action="{{ url_for('update_status', complaint_id=c.id) }}">
+            <select name="status" onchange="this.form.submit()">
+              <option value="Pending" {% if c.status == 'Pending' %}selected{% endif %}>Pending</option>
+              <option value="In Progress" {% if c.status == 'In Progress' %}selected{% endif %}>In progress</option>
+              <option value="Resolved" {% if c.status == 'Resolved' %}selected{% endif %}>Resolved</option>
+            </select>
+          </form>
+          <form method="POST" action="{{ url_for('delete_complaint', complaint_id=c.id) }}"
+                onsubmit="return confirm('Remove this complaint?');">
+            <button type="submit" class="btn-secondary">Remove</button>
+          </form>
+        </div>
+      </div>
+      {% else %}
+      <p style="color: var(--ink-muted);">No complaints yet.</p>
+      {% endfor %}
+    </div>
+  </div>
+
+</body>
+</html>

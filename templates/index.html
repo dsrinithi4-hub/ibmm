@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HostelFix — Report a facility issue</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="cc-report">
+
+  <header class="site-header">
+    <a href="{{ url_for('index') }}" class="brand">HostelFix</a>
+    <nav>
+      <a href="{{ url_for('index') }}">Report</a>
+      <a href="{{ url_for('dashboard') }}">Dashboard</a>
+      <a href="{{ url_for('admin') }}">Admin</a>
+    </nav>
+  </header>
+
+  <div class="cc-shell">
+
+    <!-- decorative floating shapes -->
+    <span class="cc-blob cc-blob--1" aria-hidden="true"></span>
+    <span class="cc-blob cc-blob--2" aria-hidden="true"></span>
+    <span class="cc-blob cc-blob--3" aria-hidden="true"></span>
+    <span class="cc-blob cc-blob--4" aria-hidden="true"></span>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="flash flash-{{ category }}" style="max-width:760px;margin-left:auto;margin-right:auto;">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <div class="cc-hero">
+      <div class="cc-hero-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 11l18-5v12L3 13v-2z"/>
+          <path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/>
+        </svg>
+      </div>
+      <h1>Report a facility issue</h1>
+      <p class="cc-subtitle">Takes under a minute. Facilities staff see it right away.</p>
+      <span class="cc-tagline">♥ A better campus starts with you</span>
+    </div>
+
+    <div class="cc-steps">
+      <div class="cc-step">
+        <div class="cc-step-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+        </div>
+        <div>
+          <div class="step-label">1. Report it</div>
+          <p>Describe the issue with your room number. Be as specific as you can.</p>
+        </div>
+      </div>
+      <div class="cc-step">
+        <div class="cc-step-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+        </div>
+        <div>
+          <div class="step-label">2. It gets triaged</div>
+          <p>Your description is scanned for urgency and given a priority automatically.</p>
+        </div>
+      </div>
+      <div class="cc-step">
+        <div class="cc-step-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+        </div>
+        <div>
+          <div class="step-label">3. Facilities acts on it</div>
+          <p>Track the status on the dashboard until it's marked resolved.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="cc-main">
+      <div class="cc-card">
+        <form method="POST" action="{{ url_for('submit') }}">
+
+          <div class="cc-field cc-field--name">
+            <label class="cc-field-label" for="name">
+              <span class="cc-field-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              </span>
+              Your name
+            </label>
+            <input type="text" id="name" name="name" placeholder="e.g. Priya Sharma" required>
+          </div>
+
+          <div class="cc-field cc-field--room">
+            <label class="cc-field-label" for="room_no">
+              <span class="cc-field-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M9 21v-6h6v6"/></svg>
+              </span>
+              Room number
+            </label>
+            <input type="text" id="room_no" name="room_no" placeholder="e.g. B-204" required>
+          </div>
+
+          <div class="cc-field cc-field--category">
+            <label class="cc-field-label" for="category">
+              <span class="cc-field-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.6 12.5 12.5 20.6a2 2 0 0 1-2.8 0l-7.3-7.3a2 2 0 0 1-.6-1.5V4.7a1 1 0 0 1 1-1h6.9a2 2 0 0 1 1.5.6l7.3 7.3a2 2 0 0 1 0 2.9Z"/><circle cx="7.5" cy="7.5" r="1.2"/></svg>
+              </span>
+              Category
+            </label>
+            <select id="category" name="category" required>
+              <option value="" disabled selected>Select a category</option>
+              {% for c in categories %}
+                <option value="{{ c }}">{{ c }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="cc-field cc-field--desc">
+            <label class="cc-field-label" for="description">
+              <span class="cc-field-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H8l-5 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              </span>
+              Describe the issue
+            </label>
+            <textarea id="description" name="description" placeholder="What's wrong, and since when?" required></textarea>
+          </div>
+
+          <button type="submit" class="cc-btn-submit">
+            Submit complaint
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4Z"/></svg>
+          </button>
+
+          <p class="cc-form-foot">Your report helps us keep the campus better!</p>
+        </form>
+      </div>
+
+      <aside class="cc-illustration">
+        <div class="cc-illustration-card">
+          <svg viewBox="0 0 240 220" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="ccRoof" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#7C5CFC"/>
+                <stop offset="1" stop-color="#3B82F6"/>
+              </linearGradient>
+              <linearGradient id="ccBuilding" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#FFFFFF"/>
+                <stop offset="1" stop-color="#EFEBFF"/>
+              </linearGradient>
+            </defs>
+            <ellipse cx="120" cy="196" rx="92" ry="10" fill="#7C5CFC" opacity="0.08"/>
+            <rect x="46" y="86" width="150" height="100" rx="10" fill="url(#ccBuilding)" stroke="#E3DEFB" stroke-width="2"/>
+            <polygon points="40,90 120,44 200,90" fill="url(#ccRoof)"/>
+            <rect x="104" y="132" width="34" height="54" rx="4" fill="#14B8A6"/>
+            <circle cx="130" cy="159" r="2.4" fill="#F6F4FF"/>
+            <rect x="60" y="102" width="22" height="22" rx="4" fill="#FB923C" opacity="0.85"/>
+            <rect x="160" y="102" width="22" height="22" rx="4" fill="#3B82F6" opacity="0.85"/>
+            <rect x="60" y="134" width="22" height="22" rx="4" fill="#7C5CFC" opacity="0.85"/>
+            <rect x="160" y="134" width="22" height="22" rx="4" fill="#14B8A6" opacity="0.85"/>
+            <circle cx="120" cy="30" r="9" fill="#FB923C"/>
+            <path d="M120 39v6" stroke="#FB923C" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="30" cy="60" r="6" fill="#14B8A6" opacity="0.6"/>
+            <circle cx="208" cy="66" r="5" fill="#7C5CFC" opacity="0.5"/>
+          </svg>
+          <p><strong>Live campus care</strong><br>Every report routes straight to facilities, tracked from submission to resolved.</p>
+        </div>
+      </aside>
+    </div>
+
+  </div>
+
+</body>
+</html>

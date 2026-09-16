@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HostelFix — Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+  <header class="site-header">
+    <a href="{{ url_for('index') }}" class="brand">HostelFix</a>
+    <nav>
+      <a href="{{ url_for('index') }}">Report</a>
+      <a href="{{ url_for('dashboard') }}">Dashboard</a>
+      <a href="{{ url_for('admin') }}">Admin</a>
+    </nav>
+  </header>
+
+  <div class="container">
+    <h1 style="margin-bottom: 24px;">Dashboard</h1>
+
+    <div class="stats-grid">
+      <div class="stat-card stat-card--pending">
+        <div class="stat-number" data-target="{{ stats.pending }}">0</div>
+        <div class="stat-label">Pending</div>
+      </div>
+      <div class="stat-card stat-card--progress">
+        <div class="stat-number" data-target="{{ stats.in_progress }}">0</div>
+        <div class="stat-label">In progress</div>
+      </div>
+      <div class="stat-card stat-card--resolved">
+        <div class="stat-number" data-target="{{ stats.resolved }}">0</div>
+        <div class="stat-label">Resolved</div>
+      </div>
+      <div class="stat-card stat-card--high">
+        <div class="stat-number" data-target="{{ stats.high_priority }}">0</div>
+        <div class="stat-label">High priority</div>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Room</th>
+            <th>Category</th>
+            <th>Description</th>
+            <th>Priority</th>
+            <th>Status</th>
+            <th>Reported</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for c in complaints %}
+          <tr>
+            <td>{{ c.room_no }}</td>
+            <td>{{ c.category }}</td>
+            <td>{{ c.description }}</td>
+            <td>
+              {% if c.priority == 'High' %}
+                <span class="badge badge--high">High</span>
+              {% elif c.priority == 'Medium' %}
+                <span class="badge badge--medium">Medium</span>
+              {% else %}
+                <span class="badge badge--low">Low</span>
+              {% endif %}
+            </td>
+            <td>
+              {% if c.status == 'Pending' %}
+                <span class="badge badge--pending">Pending</span>
+              {% elif c.status == 'In Progress' %}
+                <span class="badge badge--progress">In progress</span>
+              {% else %}
+                <span class="badge badge--resolved">Resolved</span>
+              {% endif %}
+            </td>
+            <td>{{ c.created_at }}</td>
+          </tr>
+          {% else %}
+          <tr>
+            <td colspan="6" style="color: var(--ink-muted); text-align: center; padding: 24px;">
+              No complaints yet.
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
